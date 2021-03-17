@@ -9,7 +9,7 @@ const plugins: { [name: string]: esbuild.Plugin } = {
     setup(build) {
       build.onResolve({ filter: /^@assembly\// }, (args) => {
         return {
-          path: path.join(args.resolveDir, "..", args.path.slice(1)) + ".ts",
+          path: args.path.replace(/^@assembly\//, ""),
           namespace: "assembly",
           pluginData: {
             name: args.path,
@@ -19,7 +19,8 @@ const plugins: { [name: string]: esbuild.Plugin } = {
 
       build.onLoad({ filter: /.*/, namespace: "assembly" }, async (args) => {
         await asc.ready;
-        const script = await fs.readFile(args.path, "utf8");
+        const file = path.join(__dirname, "../assembly", args.path) + ".ts";
+        const script = await fs.readFile(file, "utf8");
         const { binary } = asc.compileString(script, {
           optimize: true,
         });
@@ -29,9 +30,11 @@ const plugins: { [name: string]: esbuild.Plugin } = {
         process.stderr.write(
           `${args.pluginData.name}: ${binary.length} bytes\n`
         );
+        const base64 = Buffer.from(binary).toString("base64");
         return {
-          contents: binary,
-          loader: "binary",
+          contents: `
+            export default __compile(${JSON.stringify(base64)});
+          `,
         };
       });
     },
@@ -52,6 +55,7 @@ async function main(...args: string[]) {
     minify: true,
     platform: "node",
     target: "node12.16.1",
+    inject: ["./src/prelude.ts"],
     plugins: [plugins.assembly],
     banner: {
       js: banner,

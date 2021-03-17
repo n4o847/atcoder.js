@@ -1,15 +1,13 @@
 // @ts-ignore
 import union_find_impl from "@assembly/union_find";
 
-declare const union_find_impl: Uint8Array;
+declare const union_find_impl: WebAssembly.Module;
 
 export class UnionFind {
-  private static module: WebAssembly.Module;
   private instance: WebAssembly.Instance;
 
   constructor(length: number) {
-    UnionFind.module ??= new WebAssembly.Module(union_find_impl);
-    this.instance = new WebAssembly.Instance(UnionFind.module);
+    this.instance = new WebAssembly.Instance(union_find_impl);
     (this.instance.exports["constructor"] as Function)(length);
   }
 
