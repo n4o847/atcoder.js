@@ -5,22 +5,12 @@ declare const union_find_impl: Uint8Array;
 
 export class UnionFind {
   private static module: WebAssembly.Module;
+  private instance: WebAssembly.Instance;
 
-  constructor(private instance: WebAssembly.Instance, length: number) {
-    (instance.exports["constructor"] as Function)(length);
-  }
-
-  public static async new(length: number): Promise<UnionFind> {
-    if (this.module) {
-      const instance = await WebAssembly.instantiate(this.module);
-      return new UnionFind(instance, length);
-    } else {
-      const { module, instance } = await WebAssembly.instantiate(
-        union_find_impl
-      );
-      UnionFind.module = module;
-      return new UnionFind(instance, length);
-    }
+  constructor(length: number) {
+    UnionFind.module ??= new WebAssembly.Module(union_find_impl);
+    this.instance = new WebAssembly.Instance(UnionFind.module);
+    (this.instance.exports["constructor"] as Function)(length);
   }
 
   public find(x: number): number {
