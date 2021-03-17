@@ -1,8 +1,8 @@
-import fs = require('fs');
+import fs = require("fs");
 
 // input
 
-const inputString = fs.readFileSync(process.stdin.fd, 'utf8');
+const inputString = fs.readFileSync("/dev/stdin", "utf8");
 const inputIterator = inputString.matchAll(/\S+/g);
 
 function read(): string {
@@ -21,16 +21,20 @@ export function scanBigInt(): bigint {
   return BigInt(read());
 }
 
-export function scanArrayString(length: number): string[] {
+export function scanStringArray(length: number): string[] {
   return Array.from({ length }, () => scanString());
 }
 
-export function scanArrayNumber(length: number): number[] {
+export function scanNumberArray(length: number): number[] {
   return Array.from({ length }, () => scanNumber());
 }
 
-export function scanArrayBigInt(length: number): bigint[] {
+export function scanBigIntArray(length: number): bigint[] {
   return Array.from({ length }, () => scanBigInt());
+}
+
+export function scanInt32Array(length: number): Int32Array {
+  return Int32Array.from({ length }, () => scanNumber());
 }
 
 // output
@@ -52,7 +56,7 @@ function write(data: string): void {
   outputIndex += length;
 }
 
-process.on('exit', () => {
+process.on("exit", () => {
   flush();
 });
 
@@ -66,5 +70,5 @@ export function print(...args: Printable[]): void {
 
 export function println(...args: Printable[]): void {
   print(...args);
-  write('\n');
+  write("\n");
 }
