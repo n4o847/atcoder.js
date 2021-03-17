@@ -5,6 +5,8 @@ import fs = require("fs");
 const inputString = fs.readFileSync("/dev/stdin", "utf8");
 const inputIterator = inputString.matchAll(/\S+/g);
 
+export const ONE_BASED = 1 << 0;
+
 function read(): string {
   return inputIterator.next().value[0];
 }
@@ -13,28 +15,30 @@ export function scanString(): string {
   return read();
 }
 
-export function scanNumber(): number {
-  return parseInt(read(), 10);
+export function scanNumber(flags: number = 0): number {
+  const value = parseInt(read(), 10);
+  return flags & ONE_BASED ? value - 1 : value;
 }
 
-export function scanBigInt(): bigint {
-  return BigInt(read());
+export function scanBigInt(flags: number = 0): bigint {
+  const value = BigInt(read());
+  return flags & ONE_BASED ? value - 1n : value;
 }
 
 export function scanStringArray(length: number): string[] {
   return Array.from({ length }, () => scanString());
 }
 
-export function scanNumberArray(length: number): number[] {
-  return Array.from({ length }, () => scanNumber());
+export function scanNumberArray(length: number, flags: number = 0): number[] {
+  return Array.from({ length }, () => scanNumber(flags));
 }
 
-export function scanBigIntArray(length: number): bigint[] {
-  return Array.from({ length }, () => scanBigInt());
+export function scanBigIntArray(length: number, flags: number = 0): bigint[] {
+  return Array.from({ length }, () => scanBigInt(flags));
 }
 
-export function scanInt32Array(length: number): Int32Array {
-  return Int32Array.from({ length }, () => scanNumber());
+export function scanInt32Array(length: number, flags: number = 0): Int32Array {
+  return Int32Array.from({ length }, () => scanNumber(flags));
 }
 
 // output
