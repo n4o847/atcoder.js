@@ -32,4 +32,22 @@ export class Modulo {
       return ((((x >> 16) * y) % m) * 65536 + (x & 65535) * y) % m;
     }
   }
+
+  public pow(x: number, n: number): number {
+    let r = 1;
+    while (n) {
+      if (n & 1) r = this.mul(r, x);
+      x = this.mul(x, x);
+      n >>= 1;
+    }
+    return r;
+  }
+
+  public inv(x: number): number {
+    return this.pow(x, this.modulus - 2);
+  }
+
+  public div(x: number, y: number): number {
+    return this.mul(x, this.inv(y));
+  }
 }
