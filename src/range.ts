@@ -1,9 +1,21 @@
-class Range {
+class Range implements Iterable<number> {
   constructor(private end: number) {}
 
-  *[Symbol.iterator](): Iterator<number> {
-    for (let i = 0; i < this.end; i++) {
-      yield i;
+  public [Symbol.iterator](): Iterator<number> {
+    return new RangeIterator(this.end);
+  }
+}
+
+class RangeIterator implements Iterator<number> {
+  private value: number = 0;
+
+  constructor(private end: number) {}
+
+  public next(): IteratorResult<number> {
+    if (this.value < this.end) {
+      return { done: false, value: this.value++ };
+    } else {
+      return { done: true, value: undefined };
     }
   }
 }
