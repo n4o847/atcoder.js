@@ -1,8 +1,15 @@
 export class Modulo {
-  constructor(public modulus: number) {}
+  constructor(public mod: number) {}
+
+  public safe(x: number): number {
+    const m = this.mod;
+    x %= m;
+    if (x < 0) x += m;
+    return x;
+  }
 
   public add(x: number, y: number): number {
-    const m = this.modulus;
+    const m = this.mod;
     const t = x + y;
     if (t < m) {
       return t;
@@ -12,7 +19,7 @@ export class Modulo {
   }
 
   public sub(x: number, y: number): number {
-    const m = this.modulus;
+    const m = this.mod;
     const t = x - y;
     if (t >= 0) {
       return t;
@@ -22,7 +29,7 @@ export class Modulo {
   }
 
   public mul(x: number, y: number): number {
-    const m = this.modulus;
+    const m = this.mod;
     const t = x * y;
     if (t < m) {
       return t;
@@ -44,7 +51,7 @@ export class Modulo {
   }
 
   public inv(x: number): number {
-    return this.pow(x, this.modulus - 2);
+    return this.pow(x, this.mod - 2);
   }
 
   public div(x: number, y: number): number {
