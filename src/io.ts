@@ -55,6 +55,10 @@ function write(data: string): void {
   const length = Buffer.byteLength(data);
   if (outputIndex + length > outputBuffer.length) {
     flush();
+    if (length >= outputBuffer.length) {
+      process.stdout.write(data);
+      return;
+    }
   }
   outputBuffer.write(data, outputIndex);
   outputIndex += length;
