@@ -1,16 +1,11 @@
 import { Modulo } from "./modulo";
 
 function bsf(x: number): number {
-  return bitLength(x & -x) - 1;
+  return 31 - Math.clz32(x & -x);
 }
 
-function bitLength(x: number): number {
-  let b = 0;
-  while (x) {
-    x >>= 1;
-    b++;
-  }
-  return b;
+function ceilPow2(x: number): number {
+  return 31 - Math.clz32(x - 1);
 }
 
 export class Convolution extends Modulo {
@@ -62,7 +57,7 @@ export class Convolution extends Modulo {
       return c;
     }
 
-    const h = bitLength(n + m - 2);
+    const h = ceilPow2(n + m - 1);
     const z = 1 << h;
 
     const a_ = new Int32Array(z);
