@@ -5,7 +5,7 @@ function bsf(x: number): number {
 }
 
 function ceilPow2(x: number): number {
-  return 31 - Math.clz32(x - 1);
+  return 32 - Math.clz32(x - 1);
 }
 
 export class Convolution extends Modulo {
