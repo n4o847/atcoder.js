@@ -22,7 +22,8 @@ const plugins: { [name: string]: esbuild.Plugin } = {
         const file = path.join(__dirname, "../assembly", args.path) + ".ts";
         const script = await fs.readFile(file, "utf8");
         const { binary } = asc.compileString(script, {
-          optimize: true,
+          optimizeLevel: 3,
+          runtime: "stub",
         });
         if (binary === null) {
           throw new Error();
@@ -52,7 +53,7 @@ async function main(...args: string[]) {
   await esbuild.build({
     entryPoints: [entry],
     bundle: true,
-    minify: true,
+    minify: args.includes("--minify"),
     platform: "node",
     target: "node12.16.1",
     inject: ["./src/prelude.ts"],
